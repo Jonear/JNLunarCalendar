@@ -46,7 +46,11 @@
 }
 
 - (void)popoverClick:(NSStatusBarButton *)button {
-    [self.popover showRelativeToRect:button.bounds ofView:button preferredEdge:NSRectEdgeMaxY];
+    if (self.popover.isShown) {
+        [self.popover close];
+    } else {
+        [self.popover showRelativeToRect:button.bounds ofView:button preferredEdge:NSRectEdgeMaxY];
+    }
 }
 
 
