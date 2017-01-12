@@ -10,7 +10,7 @@
 
 static const int minYear        = 1890;     // 最小年限
 static const int maxYear        = 2100;     // 最大年限
-static const int weekStart      = 1;        // 周首日（可改成 app 配置）
+static const int weekStart      = 0;        // 周首日（可改成 app 配置）
 
 /**
  *  获得本地化的字符串 这里 app 可以自行实现
