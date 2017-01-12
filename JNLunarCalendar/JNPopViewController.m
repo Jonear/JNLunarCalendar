@@ -7,11 +7,16 @@
 //
 
 #import "JNPopViewController.h"
+#import "JNCollectionItem.h"
+#import "LunarCore.h"
 
-@interface JNPopViewController ()
+@interface JNPopViewController () <NSCollectionViewDelegate, NSCollectionViewDataSource>
 
 @property (weak) IBOutlet NSView *backgroundView;
 @property (weak) IBOutlet NSView *headView;
+@property (weak) IBOutlet NSPopUpButton *yearPopUpButton;
+@property (weak) IBOutlet NSCollectionView *collectionView;
+@property (strong) JNCollectionItem *collectionItem;
 
 @end
 
@@ -25,6 +30,29 @@
     [self.backgroundView.layer setBackgroundColor:[[NSColor redColor] colorWithAlphaComponent:0.5].CGColor];
     [self.headView setWantsLayer:YES];
     [self.headView.layer setBackgroundColor:[[NSColor whiteColor] CGColor]];
+    
+    // 1990-2050
+    [_yearPopUpButton removeAllItems];
+    NSMutableArray *titles = [NSMutableArray arrayWithCapacity:60];
+    for (int i=1990; i<=2050; i++) {
+        [titles addObject:[NSString stringWithFormat:@"%zd", i]];
+    }
+    [_yearPopUpButton addItemsWithTitles:titles];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy"];
+    NSString *currentYear = [dateFormatter stringFromDate:[NSDate date]];
+    NSInteger index = [titles indexOfObject:currentYear];
+    if (index != NSNotFound) {
+        [_yearPopUpButton selectItemAtIndex:index];
+    }
+    
+    self.collectionItem = [JNCollectionItem new];
+    [_collectionView setItemPrototype:self.collectionItem];
+    
+    NSDictionary *dictData = calendar(2007, 1);
+    NSArray *contents = dictData[@"monthData"];
+    [_collectionView setContent:contents];
 }
 
 - (IBAction)quitClick:(id)sender {

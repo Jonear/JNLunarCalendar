@@ -15,6 +15,8 @@
 		E65DF1D31E25FB2E001070C8 /* LunarCore.m in Sources */ = {isa = PBXBuildFile; fileRef = E65DF1D21E25FB2E001070C8 /* LunarCore.m */; };
 		E65DF1D71E25FCE5001070C8 /* JNPopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E65DF1D51E25FCE5001070C8 /* JNPopViewController.m */; };
 		E65DF1D81E25FCE5001070C8 /* JNPopViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E65DF1D61E25FCE5001070C8 /* JNPopViewController.xib */; };
+		E65DF1E41E270E09001070C8 /* JNCollectionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = E65DF1E21E270E09001070C8 /* JNCollectionItem.m */; };
+		E65DF1E51E270E09001070C8 /* JNCollectionItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = E65DF1E31E270E09001070C8 /* JNCollectionItem.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +54,9 @@
 		E65DF1D41E25FCE5001070C8 /* JNPopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNPopViewController.h; sourceTree = "<group>"; };
 		E65DF1D51E25FCE5001070C8 /* JNPopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNPopViewController.m; sourceTree = "<group>"; };
 		E65DF1D61E25FCE5001070C8 /* JNPopViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JNPopViewController.xib; sourceTree = "<group>"; };
+		E65DF1E11E270E09001070C8 /* JNCollectionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNCollectionItem.h; sourceTree = "<group>"; };
+		E65DF1E21E270E09001070C8 /* JNCollectionItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNCollectionItem.m; sourceTree = "<group>"; };
+		E65DF1E31E270E09001070C8 /* JNCollectionItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JNCollectionItem.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +113,9 @@
 				E65DF1D41E25FCE5001070C8 /* JNPopViewController.h */,
 				E65DF1D51E25FCE5001070C8 /* JNPopViewController.m */,
 				E65DF1D61E25FCE5001070C8 /* JNPopViewController.xib */,
+				E65DF1E11E270E09001070C8 /* JNCollectionItem.h */,
+				E65DF1E21E270E09001070C8 /* JNCollectionItem.m */,
+				E65DF1E31E270E09001070C8 /* JNCollectionItem.xib */,
 				E65DF1A91E25FB15001070C8 /* Assets.xcassets */,
 				E65DF1AE1E25FB15001070C8 /* Info.plist */,
 				E65DF1A31E25FB15001070C8 /* Supporting Files */,
@@ -256,6 +264,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E65DF1E51E270E09001070C8 /* JNCollectionItem.xib in Resources */,
 				E65DF1D81E25FCE5001070C8 /* JNPopViewController.xib in Resources */,
 				E65DF1AA1E25FB15001070C8 /* Assets.xcassets in Resources */,
 			);
@@ -285,6 +294,7 @@
 				E65DF1D31E25FB2E001070C8 /* LunarCore.m in Sources */,
 				E65DF1D71E25FCE5001070C8 /* JNPopViewController.m in Sources */,
 				E65DF1A51E25FB15001070C8 /* main.m in Sources */,
+				E65DF1E41E270E09001070C8 /* JNCollectionItem.m in Sources */,
 				E65DF1A21E25FB15001070C8 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -503,6 +513,7 @@
 				E65DF1C91E25FB16001070C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E65DF1CA1E25FB16001070C8 /* Build configuration list for PBXNativeTarget "JNLunarCalendarTests" */ = {
 			isa = XCConfigurationList;
@@ -511,6 +522,7 @@
 				E65DF1CC1E25FB16001070C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E65DF1CD1E25FB16001070C8 /* Build configuration list for PBXNativeTarget "JNLunarCalendarUITests" */ = {
 			isa = XCConfigurationList;
@@ -519,6 +531,7 @@
 				E65DF1CF1E25FB16001070C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
