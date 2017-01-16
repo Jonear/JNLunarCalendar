@@ -9,6 +9,7 @@
 #import "JNPopViewController.h"
 #import "JNCollectionItem.h"
 #import "LunarCore.h"
+#import "JNCalendarSelectManager.h"
 
 @interface JNPopViewController () <NSMenuDelegate, NSTableViewDataSource, NSTabViewDelegate>
 
@@ -26,8 +27,14 @@
 @property (weak) IBOutlet NSButton *monthButton;
 @property (weak) IBOutlet NSTableView *monthTableView;
 
-@property (assign) int currentYear;
-@property (assign) int currentMonth;
+@property (weak) IBOutlet NSTextField *dayTextFiled;
+@property (weak) IBOutlet NSView *dayTextBackground;
+@property (weak) IBOutlet NSTextField *fullDateTextFiled;
+@property (weak) IBOutlet NSTextField *lunarDateTextFiled;
+@property (weak) IBOutlet NSTextField *lunarYearTextFiled;
+@property (weak) IBOutlet NSTextField *festivalTextFiled;
+
+@property (strong) NSArray *contentDataSouce;
 
 @end
 
@@ -69,8 +76,17 @@
     [self.monthTableView setRowHeight:20];
     [self.monthTableView setHeaderView:nil];
     
+    [self.dayTextBackground setWantsLayer:YES];
+    [self.dayTextBackground.layer setCornerRadius:2];
+    [self.dayTextBackground.layer setBackgroundColor:[NSColor colorWithRed:128/255. green:89/255. blue:188/255. alpha:0.8].CGColor];
+    
     // 首次点位到今天
     [self backToToDayClick:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(selectItemChanged:)
+                                                 name:JNNotiSelctedItemChanged
+                                               object:nil];
 }
 
 - (IBAction)quitClick:(id)sender {
@@ -88,23 +104,25 @@
 - (void)reloadDataWithDate:(int)year month:(int)month {
     NSDictionary *dictData = calendar(year, month);
     NSArray *contents = dictData[@"monthData"];
-    
+
     // 判断下是否是6排
     if (contents.count > 35) {
         NSDictionary *content35 = [contents objectAtIndex:35];
         if ([content35[@"day"] integerValue] > 10) {
-            [_collectionView setContent:contents];
+            self.contentDataSouce = contents;
         } else {
             // 5排结构
             NSMutableArray *newContents = [NSMutableArray arrayWithCapacity:35];
             for (int i=0; i<35; i++) {
                 [newContents addObject:[contents objectAtIndex:i]];
             }
-            [_collectionView setContent:newContents];
+            self.contentDataSouce = newContents;
         }
     } else {
-        [_collectionView setContent:contents];
+        self.contentDataSouce = contents;
     }
+    
+    [_collectionView setContent:self.contentDataSouce];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
@@ -130,7 +148,7 @@
         NSString *title = [self.yearDataSouce objectAtIndex:row];
         [textField setStringValue:title];
         
-        if ([title intValue] == _currentYear) {
+        if ([title intValue] == [self currentYear]) {
             [rowView setSelected:YES];
         }
     }
@@ -141,16 +159,32 @@
         NSString *year = [self.yearDataSouce objectAtIndex:[[notification object] selectedRow]];
         [self.yearScrollView setHidden:YES];
         // 刷新日历
-        _currentYear = [year intValue];
+        [self setCurrentYear:[year intValue]];
         [self reloadDateData];
     }
+}
+
+- (int)currentYear {
+    return [[JNCalendarSelectManager sharedManager] currentYear];
+}
+
+- (void)setCurrentYear:(int)year {
+    [[JNCalendarSelectManager sharedManager] setCurrentYear:year];
+}
+
+- (int)currentMonth {
+    return [[JNCalendarSelectManager sharedManager] currentMonth];
+}
+
+- (void)setCurrentMonth:(int)month {
+    [[JNCalendarSelectManager sharedManager] setCurrentMonth:month];
 }
 
 - (IBAction)showYearPopUpMenu:(id)sender {
     if (self.yearScrollView.hidden) {
         [self.yearScrollView setHidden:NO];
         // 滚动过去
-        int yearSelectIndex = _currentYear - 1990;
+        int yearSelectIndex = [self currentYear] - 1990;
         [self.yearScrollView.documentView scrollPoint:NSMakePoint(0, yearSelectIndex*20)];
     } else {
         [self.yearScrollView setHidden:YES];
@@ -166,18 +200,18 @@
 }
 
 - (IBAction)nextMonthButtonClick:(id)sender {
-    if (_currentMonth+1 > 12) {
-        _currentMonth = 1;
-        _currentYear ++;
+    if (self.currentMonth+1 > 12) {
+        [self setCurrentMonth:1];
+        [self setCurrentYear:self.currentYear+1];
         
         // 超出范围
-        if (_currentYear > 2050) {
-            _currentMonth = 12;
-            _currentYear --;
+        if (self.currentYear > 2050) {
+            self.currentMonth = 12;
+            [self setCurrentYear:self.currentYear-1];
             return;
         }
     } else {
-        _currentMonth ++;
+        [self setCurrentMonth:self.currentMonth+1];
     }
     [self reloadDateData];
 }
@@ -189,27 +223,36 @@
     NSString *currentYear = [dateFormatter stringFromDate:[NSDate date]];
     [dateFormatter setDateFormat:@"MM"];
     NSString *currentMonth = [dateFormatter stringFromDate:[NSDate date]];
+    [dateFormatter setDateFormat:@"DD"];
+    NSString *currentDay = [dateFormatter stringFromDate:[NSDate date]];
     
-    _currentYear = [currentYear intValue];
-    _currentMonth = [currentMonth intValue];
+    [self.dayTextFiled setStringValue:currentDay];
+    
+    [self setCurrentYear:[currentYear intValue]];
+    [self setCurrentMonth:[currentMonth intValue]];
     [self reloadDateData];
-    
 }
 
 - (IBAction)preMonthButtonClick:(id)sender {
-    if (_currentMonth-1 < 1) {
-        _currentMonth = 12;
-        _currentYear --;
+    if (self.currentMonth-1 < 1) {
+        [self setCurrentMonth:12];
+        [self setCurrentYear:self.currentYear-1];
         // 超出范围
-        if (_currentYear < 1990) {
-            _currentMonth = 1;
-            _currentYear ++;
+        if (self.currentYear < 1990) {
+            [self setCurrentMonth:1];
+            [self setCurrentYear:self.currentYear+1];
             return;
         }
     } else {
-        _currentMonth --;
+        [self setCurrentMonth:self.currentMonth-1];
     }
     [self reloadDateData];
+}
+
+- (void)selectItemChanged:(NSNotification *)notification {
+    NSDictionary *dict = notification.userInfo;
+    
+    [self reloadDetailData:dict];
 }
 
 - (void)viewDidDisappear {
@@ -219,14 +262,41 @@
 }
 
 - (void)reloadDateData {
-    [self reloadDataWithDate:_currentYear month:_currentMonth];
+    [self reloadDataWithDate:self.currentYear month:self.currentMonth];
     
-    [_yearButton setTitle:[NSString stringWithFormat:@"%zd 年", _currentYear]];
-    [_monthButton setTitle:[NSString stringWithFormat:@"%zd 月", _currentMonth]];
+    [_yearButton setTitle:[NSString stringWithFormat:@"%zd 年", self.currentYear]];
+    [_monthButton setTitle:[NSString stringWithFormat:@"%zd 月", self.currentMonth]];
     
     [self.monthScrollView setHidden:YES];
     [self.yearScrollView setHidden:YES];
     [self.yearTableView reloadData];
+}
+
+- (void)reloadDetailData:(NSDictionary *)dict {
+    [self.dayTextFiled setStringValue:dict[@"day"]];
+    NSArray *weekName = @[@"星期日", @"星期一", @"星期二", @"星期三", @"星期四", @"星期五", @"星期六"];
+    NSInteger index = [self.contentDataSouce indexOfObject:dict];
+    if (index == NSNotFound) {
+        index = 0;
+    }
+    [self.fullDateTextFiled setStringValue:[NSString stringWithFormat:@"%@-%@-%@ %@", dict[@"year"], dict[@"month"], dict[@"day"], weekName[index%7]]];
+    [self.lunarDateTextFiled setStringValue:[NSString stringWithFormat:@"%@%@", dict[@"lunarMonthName"], dict[@"lunarDayName"]]];
+    [self.lunarYearTextFiled setStringValue:[NSString stringWithFormat:@"%@年 [%@年]", dict[@"GanZhiYear"], dict[@"zodiac"]]];
+    
+    NSString *solarFestival = [dict valueForKey:@"solarFestival"]; // 阳历节日
+    solarFestival = [solarFestival stringByReplacingOccurrencesOfString:@" " withString:@"\n"];
+    NSString *lunarFestival = [dict valueForKey:@"lunarFestival"]; // 农历节日
+    if (solarFestival.length>0) {
+        [self.festivalTextFiled setStringValue:solarFestival];
+    } else if (lunarFestival.length>0) {
+        [self.festivalTextFiled setStringValue:lunarFestival];
+    } else {
+        [self.festivalTextFiled setStringValue:@""];
+    }
+    
+    // 布局
+    [self.festivalTextFiled sizeToFit];
+    [self.festivalTextFiled setFrame:CGRectMake(CGRectGetMinX(self.festivalTextFiled.frame), CGRectGetMinY(self.lunarYearTextFiled.frame)-CGRectGetHeight(self.festivalTextFiled.frame)-7, 123, CGRectGetHeight(self.festivalTextFiled.frame))];
 }
 
 

@@ -7,6 +7,7 @@
 //
 
 #import "JNCollectionItem.h"
+#import "JNCalendarSelectManager.h"
 
 @interface JNCollectionItem ()
 @property (weak) IBOutlet NSTextField *titleLabel;
@@ -30,9 +31,13 @@
     [super setSelected:selected];
     
     [self.view setWantsLayer:YES];
-    if (selected && !self.isToday) {
-        [self.view.layer setBorderColor:self.selectColor.CGColor];
-        [self.view.layer setBorderWidth:2.];
+    if (selected) {
+        if (![self isToday]) {
+            [self.view.layer setBorderColor:self.selectColor.CGColor];
+            [self.view.layer setBorderWidth:2.];
+        }
+        
+        [[JNCalendarSelectManager sharedManager] selectedDay:self.representedObject];
     } else {
         [self.view.layer setBorderWidth:0.];
     }
@@ -72,8 +77,16 @@
             [self.workDayTag setHidden:YES];
         }
         
+        // 今天
         if ([self isToday:[[representedObject valueForKey:@"year"] intValue] month:[[representedObject valueForKey:@"month"] intValue] day:[[representedObject valueForKey:@"day"] intValue]]) {
             [self setToDay];
+        }
+        
+        // 其他月
+        if ([[representedObject valueForKey:@"year"] intValue] != [JNCalendarSelectManager sharedManager].currentYear ||
+            [[representedObject valueForKey:@"month"] intValue] != [JNCalendarSelectManager sharedManager].currentMonth) {
+            [self.titleLabel setTextColor:[NSColor lightGrayColor]];
+            [self.detailLabel setTextColor:[NSColor lightGrayColor]];
         }
     }
 }
