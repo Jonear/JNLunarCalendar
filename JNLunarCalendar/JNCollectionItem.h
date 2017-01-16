@@ -10,4 +10,6 @@
 
 @interface JNCollectionItem : NSCollectionViewItem
 
+- (void)setToDay;
+
 @end

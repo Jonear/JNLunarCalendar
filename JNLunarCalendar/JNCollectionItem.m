@@ -12,6 +12,8 @@
 @property (weak) IBOutlet NSTextField *titleLabel;
 @property (weak) IBOutlet NSTextField *detailLabel;
 @property (weak) IBOutlet NSTextField *workDayTag;
+@property (strong) NSColor *selectColor;
+@property (assign) BOOL isToday;
 
 @end
 
@@ -20,8 +22,28 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do view setup here.
+    self.selectColor = [[NSColor redColor] colorWithAlphaComponent:0.7];
     [self.titleLabel setTextColor:[NSColor blackColor]];
+}
+
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
     
+    [self.view setWantsLayer:YES];
+    if (selected && !self.isToday) {
+        [self.view.layer setBorderColor:self.selectColor.CGColor];
+        [self.view.layer setBorderWidth:2.];
+    } else {
+        [self.view.layer setBorderWidth:0.];
+    }
+}
+
+- (void)setToDay {
+    self.isToday = YES;
+    [self.view setWantsLayer:YES];
+    [self.view.layer setBackgroundColor:self.selectColor.CGColor];
+    [self.titleLabel setTextColor:[NSColor whiteColor]];
+    [self.detailLabel setTextColor:[NSColor whiteColor]];
 }
 
 -(void)setRepresentedObject:(id)representedObject {
@@ -49,7 +71,23 @@
         } else {
             [self.workDayTag setHidden:YES];
         }
+        
+        if ([self isToday:[[representedObject valueForKey:@"year"] intValue] month:[[representedObject valueForKey:@"month"] intValue] day:[[representedObject valueForKey:@"day"] intValue]]) {
+            [self setToDay];
+        }
     }
+}
+
+- (BOOL)isToday:(int)year month:(int)month day:(int)day {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy"];
+    NSString *currentYear = [dateFormatter stringFromDate:[NSDate date]];
+    [dateFormatter setDateFormat:@"MM"];
+    NSString *currentMonth = [dateFormatter stringFromDate:[NSDate date]];
+    [dateFormatter setDateFormat:@"DD"];
+    NSString *currentDay = [dateFormatter stringFromDate:[NSDate date]];
+    
+    return ([currentYear intValue]==year && [currentMonth intValue]==month && [currentDay intValue]==day);
 }
 
 @end
