@@ -58,6 +58,19 @@
         [self.titleLabel setStringValue:[representedObject valueForKey:@"day"]];
         
         NSString *solarFestival = [representedObject valueForKey:@"solarFestival"]; // 阳历节日
+        solarFestival = [solarFestival stringByReplacingOccurrencesOfString:@"*" withString:@""];
+        NSRange range = [solarFestival rangeOfString:@"-"];
+        if (range.location != NSNotFound) {
+            solarFestival = [solarFestival substringToIndex:range.location];
+        }
+        range = [solarFestival rangeOfString:@" "];
+        if (range.location != NSNotFound) {
+            solarFestival = [solarFestival substringToIndex:range.location];
+        }
+        if (solarFestival.length > 4) {
+            solarFestival = [solarFestival substringToIndex:4];
+        }
+        
         NSString *lunarFestival = [representedObject valueForKey:@"lunarFestival"]; // 农历节日
         if (solarFestival.length>0) {
             [self.detailLabel setStringValue:solarFestival];
@@ -87,6 +100,10 @@
             [[representedObject valueForKey:@"month"] intValue] != [JNCalendarSelectManager sharedManager].currentMonth) {
             [self.titleLabel setTextColor:[NSColor lightGrayColor]];
             [self.detailLabel setTextColor:[NSColor lightGrayColor]];
+        }
+        
+        if ([[representedObject valueForKey:@"defaultSelected"] boolValue]) {
+            [self setSelected:YES];
         }
     }
 }

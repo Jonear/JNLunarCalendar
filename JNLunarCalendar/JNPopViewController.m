@@ -34,7 +34,7 @@
 @property (weak) IBOutlet NSTextField *lunarYearTextFiled;
 @property (weak) IBOutlet NSTextField *festivalTextFiled;
 
-@property (strong) NSArray *contentDataSouce;
+@property (strong) NSMutableArray *contentDataSouce;
 
 @end
 
@@ -103,7 +103,7 @@
 
 - (void)reloadDataWithDate:(int)year month:(int)month {
     NSDictionary *dictData = calendar(year, month);
-    NSArray *contents = dictData[@"monthData"];
+    NSMutableArray *contents = [dictData[@"monthData"] mutableCopy];
 
     // 判断下是否是6排
     if (contents.count > 35) {
@@ -121,8 +121,6 @@
     } else {
         self.contentDataSouce = contents;
     }
-    
-    [_collectionView setContent:self.contentDataSouce];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
@@ -161,6 +159,11 @@
         // 刷新日历
         [self setCurrentYear:[year intValue]];
         [self reloadDateData];
+    } else if ([notification object] == self.monthTableView) {
+        NSInteger month = [[notification object] selectedRow]+1;
+        [self.monthScrollView setHidden:YES];
+        [self setCurrentMonth:(int)month];
+        [self reloadDateData];
     }
 }
 
@@ -182,6 +185,7 @@
 
 - (IBAction)showYearPopUpMenu:(id)sender {
     if (self.yearScrollView.hidden) {
+        [self.monthScrollView setHidden:YES];
         [self.yearScrollView setHidden:NO];
         // 滚动过去
         int yearSelectIndex = [self currentYear] - 1990;
@@ -193,6 +197,7 @@
 
 - (IBAction)showMonthPopUpMenu:(id)sender {
     if (self.monthScrollView.hidden) {
+        [self.yearScrollView setHidden:YES];
         [self.monthScrollView setHidden:NO];
     } else {
         [self.monthScrollView setHidden:YES];
@@ -230,8 +235,9 @@
     
     [self setCurrentYear:[currentYear intValue]];
     [self setCurrentMonth:[currentMonth intValue]];
-    [self reloadDateData];
+    [self reloadDateDataWithDefaultSelected:[currentDay intValue]];
 }
+
 
 - (IBAction)preMonthButtonClick:(id)sender {
     if (self.currentMonth-1 < 1) {
@@ -262,7 +268,24 @@
 }
 
 - (void)reloadDateData {
+    [self reloadDateDataWithDefaultSelected:1];
+}
+
+- (void)reloadDateDataWithDefaultSelected:(int)day {
     [self reloadDataWithDate:self.currentYear month:self.currentMonth];
+    
+    // 设置默认选中
+    [self.contentDataSouce enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj[@"year"] intValue] == self.currentYear && [obj[@"month"] intValue] == self.currentMonth && [obj[@"day"] intValue] == day) {
+            [self reloadDetailData:obj];
+            NSMutableDictionary *mdict = [obj mutableCopy];
+            [mdict setObject:@(YES) forKey:@"defaultSelected"];
+            [self.contentDataSouce replaceObjectAtIndex:idx withObject:mdict];
+        }
+    }];
+    
+    
+    [_collectionView setContent:self.contentDataSouce];
     
     [_yearButton setTitle:[NSString stringWithFormat:@"%zd 年", self.currentYear]];
     [_monthButton setTitle:[NSString stringWithFormat:@"%zd 月", self.currentMonth]];
@@ -285,6 +308,9 @@
     
     NSString *solarFestival = [dict valueForKey:@"solarFestival"]; // 阳历节日
     solarFestival = [solarFestival stringByReplacingOccurrencesOfString:@" " withString:@"\n"];
+    solarFestival = [solarFestival stringByReplacingOccurrencesOfString:@"-" withString:@"\n"];
+    solarFestival = [solarFestival stringByReplacingOccurrencesOfString:@"*" withString:@""];
+    
     NSString *lunarFestival = [dict valueForKey:@"lunarFestival"]; // 农历节日
     if (solarFestival.length>0) {
         [self.festivalTextFiled setStringValue:solarFestival];
