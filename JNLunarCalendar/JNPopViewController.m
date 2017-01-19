@@ -381,11 +381,11 @@
             [_collectionView setSelectionIndexes:[NSIndexSet indexSetWithIndex:indexPath.item]];
         }
         
+        [item reloadDataWithObject:dict];
+        
         if (indexPath.item%7==0 || indexPath.item%7==6) {
             [item setHolidayTagColor:HolidayColor];
         }
-        
-        [item reloadDataWithObject:dict];
     }
     
     return item;
