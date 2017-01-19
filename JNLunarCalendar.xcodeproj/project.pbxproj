@@ -16,6 +16,7 @@
 		E65DF1D81E25FCE5001070C8 /* JNPopViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E65DF1D61E25FCE5001070C8 /* JNPopViewController.xib */; };
 		E65DF1E41E270E09001070C8 /* JNCollectionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = E65DF1E21E270E09001070C8 /* JNCollectionItem.m */; };
 		E65DF1E51E270E09001070C8 /* JNCollectionItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = E65DF1E31E270E09001070C8 /* JNCollectionItem.xib */; };
+		E6757C4D1E30A50D00A5D7A1 /* JNThemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E6757C4C1E30A50D00A5D7A1 /* JNThemeManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,8 @@
 		E65DF1E11E270E09001070C8 /* JNCollectionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNCollectionItem.h; sourceTree = "<group>"; };
 		E65DF1E21E270E09001070C8 /* JNCollectionItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNCollectionItem.m; sourceTree = "<group>"; };
 		E65DF1E31E270E09001070C8 /* JNCollectionItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JNCollectionItem.xib; sourceTree = "<group>"; };
+		E6757C4B1E30A50D00A5D7A1 /* JNThemeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNThemeManager.h; sourceTree = "<group>"; };
+		E6757C4C1E30A50D00A5D7A1 /* JNThemeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNThemeManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +81,8 @@
 				E65DF1E31E270E09001070C8 /* JNCollectionItem.xib */,
 				E625B78C1E2CA79D00A65C75 /* JNCalendarSelectManager.h */,
 				E625B78D1E2CA79D00A65C75 /* JNCalendarSelectManager.m */,
+				E6757C4B1E30A50D00A5D7A1 /* JNThemeManager.h */,
+				E6757C4C1E30A50D00A5D7A1 /* JNThemeManager.m */,
 				E65DF1A91E25FB15001070C8 /* Assets.xcassets */,
 				E65DF1AE1E25FB15001070C8 /* Info.plist */,
 				E65DF1A31E25FB15001070C8 /* Supporting Files */,
@@ -179,6 +184,7 @@
 				E625B78E1E2CA79D00A65C75 /* JNCalendarSelectManager.m in Sources */,
 				E65DF1E41E270E09001070C8 /* JNCollectionItem.m in Sources */,
 				E65DF1A21E25FB15001070C8 /* AppDelegate.m in Sources */,
+				E6757C4D1E30A50D00A5D7A1 /* JNThemeManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

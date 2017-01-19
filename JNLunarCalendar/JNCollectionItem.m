@@ -8,12 +8,12 @@
 
 #import "JNCollectionItem.h"
 #import "JNCalendarSelectManager.h"
+#import "JNThemeManager.h"
 
 @interface JNCollectionItem ()
 @property (weak) IBOutlet NSTextField *titleLabel;
 @property (weak) IBOutlet NSTextField *detailLabel;
 @property (weak) IBOutlet NSTextField *workDayTag;
-@property (strong) NSColor *selectColor;
 @property (assign) BOOL isToday;
 
 @end
@@ -23,7 +23,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do view setup here.
-    self.selectColor = [[NSColor redColor] colorWithAlphaComponent:0.7];
     [self.titleLabel setTextColor:[NSColor blackColor]];
 }
 
@@ -57,8 +56,8 @@
     [self.view.layer setBackgroundColor:[NSColor clearColor].CGColor];
 }
 
--(void)setRepresentedObject:(id)representedObject {
-    [super setRepresentedObject:representedObject];
+-(void)reloadDataWithObject:(id)representedObject {
+    [self setRepresentedObject:representedObject];
     if (representedObject !=nil)
     {
         [self.titleLabel setTextColor:[NSColor blackColor]];

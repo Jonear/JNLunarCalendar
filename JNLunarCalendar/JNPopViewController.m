@@ -10,6 +10,7 @@
 #import "JNCollectionItem.h"
 #import "LunarCore.h"
 #import "JNCalendarSelectManager.h"
+#import "JNThemeManager.h"
 
 #define NormalItemSize CGSizeMake(65, 58)
 #define ShortItemSize CGSizeMake(65, 51)
@@ -31,6 +32,9 @@
 @property (weak) IBOutlet NSButton *monthButton;
 @property (weak) IBOutlet NSTableView *monthTableView;
 
+@property (weak) IBOutlet NSScrollView *themeScrollView;
+@property (weak) IBOutlet NSTableView *themeTableView;
+
 @property (weak) IBOutlet NSTextField *dayTextFiled;
 @property (weak) IBOutlet NSView *dayTextBackground;
 @property (weak) IBOutlet NSTextField *fullDateTextFiled;
@@ -41,6 +45,7 @@
 @property (strong) NSCollectionViewFlowLayout *flowLayout;
 
 @property (strong) NSMutableArray *contentDataSouce;
+@property (strong) NSArray *themeDataSouce;
 
 @end
 
@@ -52,6 +57,7 @@
     if (self) {
         // 1990-2050
         self.yearDataSouce = [NSMutableArray arrayWithCapacity:60];
+        self.themeDataSouce = [[JNThemeManager sharedManager] getAllTheme];
         for (int i=1990; i<=2050; i++) {
             [self.yearDataSouce addObject:[NSString stringWithFormat:@"%zd", i]];
         }
@@ -64,7 +70,10 @@
     // Do view setup here.
     
     [self.backgroundView setWantsLayer:YES];
-    [self.backgroundView.layer setBackgroundColor:[[NSColor redColor] colorWithAlphaComponent:0.5].CGColor];
+    [self.dayTextBackground setWantsLayer:YES];
+    [self.dayTextBackground.layer setCornerRadius:2];
+    
+    [self updateTheme];
     [self.headView setWantsLayer:YES];
     [self.headView.layer setBackgroundColor:[[NSColor whiteColor] CGColor]];
     
@@ -76,7 +85,6 @@
     self.flowLayout.minimumInteritemSpacing = 0;
     _collectionView.collectionViewLayout = self.flowLayout;
     
-    
     [self.yearTableView setGridStyleMask:(NSTableViewSolidHorizontalGridLineMask | NSTableViewSolidVerticalGridLineMask)];
     [self.yearTableView setRowHeight:20];
     [self.yearTableView setHeaderView:nil];
@@ -85,12 +93,19 @@
     [self.monthTableView setRowHeight:20];
     [self.monthTableView setHeaderView:nil];
     
-    [self.dayTextBackground setWantsLayer:YES];
-    [self.dayTextBackground.layer setCornerRadius:2];
-    [self.dayTextBackground.layer setBackgroundColor:[NSColor colorWithRed:128/255. green:89/255. blue:188/255. alpha:0.8].CGColor];
+    [self.themeTableView setRowHeight:20];
+    [self.themeTableView setHeaderView:nil];
     
     // 首次点位到今天
     [self backToToDayClick:nil];
+}
+
+- (void)updateTheme {
+    
+    [self.backgroundView.layer setBackgroundColor:[[JNThemeManager sharedManager] backgroundColor].CGColor];
+    [self.festivalTextFiled setTextColor:[[JNThemeManager sharedManager] detailColor]];
+    [self.dayTextBackground.layer setBackgroundColor:[[JNThemeManager sharedManager] detailColor].CGColor];
+    [self.collectionView reloadData];
 }
 
 - (void)viewDidDisappear {
@@ -98,6 +113,7 @@
     
     [self.yearScrollView setHidden:YES];
     [self.monthScrollView setHidden:YES];
+    [self.themeScrollView setHidden:YES];
 }
 
 - (void)reloadDataWithDate:(int)year month:(int)month {
@@ -128,6 +144,8 @@
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
     if (self.monthTableView == tableView) {
         return 12;
+    } else if (self.themeTableView == tableView) {
+        return self.themeDataSouce.count;
     }
     return self.yearDataSouce.count;
 }
@@ -144,6 +162,11 @@
         NSTextField *textField = [rowView viewWithTag:31];
         [textField setStringValue:[NSString stringWithFormat:@"%zd 月", row+1]];
         
+    } else if (self.themeTableView == tableView) {
+        NSTextField *textField = [rowView viewWithTag:31];
+        [textField setStringValue:@""];
+        NSColor *color = self.themeDataSouce[row];
+        [rowView setBackgroundColor:color];
     } else {
         NSTextField *textField = [rowView viewWithTag:31];
         NSString *title = [self.yearDataSouce objectAtIndex:row];
@@ -167,6 +190,11 @@
         [self.monthScrollView setHidden:YES];
         [self setCurrentMonth:(int)month];
         [self reloadDateData];
+    } else if ([notification object] == self.themeTableView) {
+        [self.themeScrollView setHidden:YES];
+        [[JNThemeManager sharedManager] updateTheme:[[notification object] selectedRow]];
+        [self updateTheme];
+        [self.themeTableView deselectAll:nil];
     }
 }
 
@@ -175,6 +203,7 @@
 - (IBAction)showYearPopUpMenu:(id)sender {
     if (self.yearScrollView.hidden) {
         [self.monthScrollView setHidden:YES];
+        [self.themeScrollView setHidden:YES];
         [self.yearScrollView setHidden:NO];
         // 滚动过去
         int yearSelectIndex = [self currentYear] - 1990;
@@ -187,6 +216,7 @@
 - (IBAction)showMonthPopUpMenu:(id)sender {
     if (self.monthScrollView.hidden) {
         [self.yearScrollView setHidden:YES];
+        [self.themeScrollView setHidden:YES];
         [self.monthScrollView setHidden:NO];
     } else {
         [self.monthScrollView setHidden:YES];
@@ -244,6 +274,16 @@
     [self reloadDateData];
 }
 
+- (IBAction)showThemeClick:(id)sender {
+    if (self.themeScrollView.hidden) {
+        [self.yearScrollView setHidden:YES];
+        [self.monthScrollView setHidden:YES];
+        [self.themeScrollView setHidden:NO];
+    } else {
+        [self.themeScrollView setHidden:YES];
+    }
+}
+
 - (IBAction)quitClick:(id)sender {
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:@"是否退出应用程序?"];
@@ -283,6 +323,7 @@
     
     [self.monthScrollView setHidden:YES];
     [self.yearScrollView setHidden:YES];
+    [self.themeScrollView setHidden:YES];
     [self.yearTableView reloadData];
 }
 
@@ -310,6 +351,8 @@
     } else {
         [self.festivalTextFiled setStringValue:@""];
     }
+    
+    [self.festivalTextFiled setTextColor:[[JNThemeManager sharedManager] detailColor]];
     [self.festivalTextFiled.layer setShadowColor:[NSColor whiteColor].CGColor];
     [self.festivalTextFiled.layer setShadowOffset:CGSizeMake(1., 1.)];
     [self.festivalTextFiled.layer setShadowOpacity:0.5];
@@ -327,6 +370,7 @@
 - (NSCollectionViewItem *)collectionView:(NSCollectionView *)collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *)indexPath NS_AVAILABLE_MAC(10_11) {
     JNCollectionItem *item = [collectionView makeItemWithIdentifier:@"JNCollectionItem" forIndexPath:indexPath];
     
+    item.selectColor = [JNThemeManager sharedManager].backgroundColor;
     [item setSelected:NO];
     if (self.contentDataSouce.count > indexPath.item) {
         id dict = self.contentDataSouce[indexPath.item];
@@ -336,12 +380,14 @@
             [self reloadDetailData:dict];
             [_collectionView setSelectionIndexes:[NSIndexSet indexSetWithIndex:indexPath.item]];
         }
+        
+        if (indexPath.item%7==0 || indexPath.item%7==6) {
+            [item setHolidayTagColor:HolidayColor];
+        }
+        
+        [item reloadDataWithObject:dict];
     }
     
-    if (indexPath.item%7==0 || indexPath.item%7==6) {
-        [item setHolidayTagColor:HolidayColor];
-    }
-
     return item;
 }
 

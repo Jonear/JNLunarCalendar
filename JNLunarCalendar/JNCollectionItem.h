@@ -9,9 +9,9 @@
 #import <Cocoa/Cocoa.h>
 
 @interface JNCollectionItem : NSCollectionViewItem
+@property (strong) NSColor *selectColor;
 
 - (void)setHolidayTagColor:(NSColor *)color;
-
-- (void)setToDay;
+- (void)reloadDataWithObject:(id)representedObject;
 
 @end
