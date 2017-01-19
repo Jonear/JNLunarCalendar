@@ -13,6 +13,7 @@
 
 #define NormalItemSize CGSizeMake(65, 58)
 #define ShortItemSize CGSizeMake(65, 51)
+#define HolidayColor [NSColor colorWithRed:156/255. green:0 blue:5/255. alpha:0.8]
 
 @interface JNPopViewController () <NSMenuDelegate, NSTableViewDataSource, NSTabViewDelegate, NSCollectionViewDataSource, NSCollectionViewDelegate>
 
@@ -309,6 +310,9 @@
     } else {
         [self.festivalTextFiled setStringValue:@""];
     }
+    [self.festivalTextFiled.layer setShadowColor:[NSColor whiteColor].CGColor];
+    [self.festivalTextFiled.layer setShadowOffset:CGSizeMake(1., 1.)];
+    [self.festivalTextFiled.layer setShadowOpacity:0.5];
     
     // 布局
     [self.festivalTextFiled sizeToFit];
@@ -332,6 +336,10 @@
             [self reloadDetailData:dict];
             [_collectionView setSelectionIndexes:[NSIndexSet indexSetWithIndex:indexPath.item]];
         }
+    }
+    
+    if (indexPath.item%7==0 || indexPath.item%7==6) {
+        [item setHolidayTagColor:HolidayColor];
     }
 
     return item;

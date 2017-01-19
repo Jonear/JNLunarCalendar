@@ -110,7 +110,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="六" drawsBackground="YES" id="kjK-nW-qD7">
                                         <font key="font" metaFont="system"/>
-                                        <color key="textColor" red="0.61062041234887743" green="0.0" blue="0.018215932561247289" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="textColor" red="0.61176470588235299" green="0.0" blue="0.019607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
@@ -396,8 +396,8 @@
                             <rect key="frame" x="469" y="154" width="123" height="17"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label" id="y7q-Cn-iy7">
-                                <font key="font" metaFont="system" size="12"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" red="0.61062041229999997" green="0.0" blue="0.03034235133" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
@@ -413,7 +413,7 @@
                     </textFieldCell>
                 </textField>
             </subviews>
-            <point key="canvasLocation" x="-204" y="83"/>
+            <point key="canvasLocation" x="-520" y="39"/>
         </customView>
     </objects>
     <resources>

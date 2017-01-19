@@ -126,4 +126,12 @@
     return ([currentYear intValue]==year && [currentMonth intValue]==month && [currentDay intValue]==day);
 }
 
+- (void)setHolidayTagColor:(NSColor *)color {
+    if ([[self.representedObject valueForKey:@"year"] intValue] != [JNCalendarSelectManager sharedManager].currentYear ||
+        [[self.representedObject valueForKey:@"month"] intValue] != [JNCalendarSelectManager sharedManager].currentMonth) {
+    } else {
+        [self.titleLabel setTextColor:color];
+    }
+}
+
 @end

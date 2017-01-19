@@ -10,6 +10,8 @@
 
 @interface JNCollectionItem : NSCollectionViewItem
 
+- (void)setHolidayTagColor:(NSColor *)color;
+
 - (void)setToDay;
 
 @end
