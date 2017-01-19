@@ -109,6 +109,7 @@
     if (contents.count > 35) {
         NSDictionary *content35 = [contents objectAtIndex:35];
         if ([content35[@"day"] integerValue] > 10) {
+            // 6排
             self.contentDataSouce = contents;
         } else {
             // 5排结构
@@ -258,7 +259,13 @@
 - (void)selectItemChanged:(NSNotification *)notification {
     NSDictionary *dict = notification.userInfo;
     
-    [self reloadDetailData:dict];
+    if ([dict[@"month"] intValue] == self.currentMonth) {
+        [self reloadDetailData:dict];
+    } else {
+        [self setCurrentYear:[dict[@"year"] intValue]];
+        [self setCurrentMonth:[dict[@"month"] intValue]];
+        [self reloadDateDataWithDefaultSelected:[dict[@"day"] intValue]];
+    }
 }
 
 - (void)viewDidDisappear {
@@ -268,24 +275,46 @@
 }
 
 - (void)reloadDateData {
-    [self reloadDateDataWithDefaultSelected:1];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy"];
+    NSString *currentYear = [dateFormatter stringFromDate:[NSDate date]];
+    [dateFormatter setDateFormat:@"MM"];
+    NSString *currentMonth = [dateFormatter stringFromDate:[NSDate date]];
+    [dateFormatter setDateFormat:@"DD"];
+    NSString *currentDay = [dateFormatter stringFromDate:[NSDate date]];
+    
+    if (self.currentYear == [currentYear intValue] && self.currentMonth == [currentMonth intValue]) {
+        [self reloadDateDataWithDefaultSelected:[currentDay intValue]];
+    } else {
+        [self reloadDateDataWithDefaultSelected:1];
+    }
 }
 
 - (void)reloadDateDataWithDefaultSelected:(int)day {
     [self reloadDataWithDate:self.currentYear month:self.currentMonth];
     
     // 设置默认选中
+    __block int selectIndex = day;
+    __block NSDictionary *wobj = nil;
     [self.contentDataSouce enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj[@"year"] intValue] == self.currentYear && [obj[@"month"] intValue] == self.currentMonth && [obj[@"day"] intValue] == day) {
-            [self reloadDetailData:obj];
             NSMutableDictionary *mdict = [obj mutableCopy];
             [mdict setObject:@(YES) forKey:@"defaultSelected"];
             [self.contentDataSouce replaceObjectAtIndex:idx withObject:mdict];
+            selectIndex = (int)idx;
+            wobj = obj;
+            *stop = YES;
         }
     }];
     
-    
     [_collectionView setContent:self.contentDataSouce];
+    // 解决一个坑爹的不能点击的问题
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if ([wobj[@"year"] intValue] == self.currentYear && [wobj[@"month"] intValue] == self.currentMonth) {
+            [_collectionView setSelectionIndexes:[NSIndexSet indexSetWithIndex:selectIndex]];
+        }
+    });
+    
     
     [_yearButton setTitle:[NSString stringWithFormat:@"%zd 年", self.currentYear]];
     [_monthButton setTitle:[NSString stringWithFormat:@"%zd 月", self.currentMonth]];

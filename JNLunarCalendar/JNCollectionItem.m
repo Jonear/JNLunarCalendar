@@ -28,18 +28,20 @@
 }
 
 - (void)setSelected:(BOOL)selected {
-    [super setSelected:selected];
-    
-    [self.view setWantsLayer:YES];
-    if (selected) {
-        if (![self isToday]) {
-            [self.view.layer setBorderColor:self.selectColor.CGColor];
-            [self.view.layer setBorderWidth:2.];
-        }
+    if (self.selected != selected) {
+        [super setSelected:selected];
         
-        [[JNCalendarSelectManager sharedManager] selectedDay:self.representedObject];
-    } else {
-        [self.view.layer setBorderWidth:0.];
+        [self.view setWantsLayer:YES];
+        if (selected) {
+            if (![self isToday]) {
+                [self.view.layer setBorderColor:self.selectColor.CGColor];
+                [self.view.layer setBorderWidth:2.];
+            }
+            
+            [[JNCalendarSelectManager sharedManager] selectedDay:self.representedObject];
+        } else {
+            [self.view.layer setBorderWidth:0.];
+        }
     }
 }
 
@@ -104,6 +106,8 @@
         
         if ([[representedObject valueForKey:@"defaultSelected"] boolValue]) {
             [self setSelected:YES];
+        } else {
+            [self setSelected:NO];
         }
     }
 }
