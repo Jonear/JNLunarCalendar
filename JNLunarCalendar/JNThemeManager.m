@@ -16,6 +16,8 @@ alpha:alphaValue]
 
 #define NSColorFromRGB(rgbValue)              NSColorFromRGBA(rgbValue, 1.0)
 
+#define UserSaveThemeIndexKey @"UserSaveThemeIndexKey"
+
 @implementation JNThemeManager
 
 + (instancetype)sharedManager {
@@ -31,26 +33,33 @@ alpha:alphaValue]
 {
     self = [super init];
     if (self) {
-        [self updateTheme:JNThemeType_Normal];
+        NSNumber *theme = [[NSUserDefaults standardUserDefaults] objectForKey:UserSaveThemeIndexKey];
+        [self updateTheme:[theme intValue]];
     }
     return self;
 }
 
 - (NSArray<NSColor*>*)getAllTheme {
-    return @[NSColorFromRGB(0xfa897a), NSColorFromRGB(0x11897a), NSColorFromRGB(0xaa8923)];
+    return @[NSColorFromRGB(0xfa897a), NSColorFromRGB(0x11897a), NSColorFromRGB(0xaa8923), NSColorFromRGB(0x3588ab)];
 }
 
 - (void)updateTheme:(JNThemeType)type {
-    if (type == JNThemeType_Normal) {
-        _backgroundColor = NSColorFromRGB(0xfa897a);
-        _detailColor = NSColorFromRGB(0x8F53C4);
-    } else if (type == JNThemeType_Green) {
+    if (type == JNThemeType_Green) {
         _backgroundColor = NSColorFromRGB(0x11897a);
-        _detailColor = NSColorFromRGB(0x8F5011);
+        _detailColor = NSColorFromRGB(0x335021);
     } else if (type == JNThemeType_Gray) {
         _backgroundColor = NSColorFromRGB(0xaa8923);
         _detailColor = NSColorFromRGB(0x774411);
+    } else if (type == JNThemeType_Nice) {
+        _backgroundColor = NSColorFromRGB(0x3588ab);
+        _detailColor = NSColorFromRGB(0x324488);
+    } else {
+        _backgroundColor = NSColorFromRGB(0xfa897a);
+        _detailColor = NSColorFromRGB(0x8F53C4);
     }
+    
+    [[NSUserDefaults standardUserDefaults] setObject:@(type) forKey:UserSaveThemeIndexKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

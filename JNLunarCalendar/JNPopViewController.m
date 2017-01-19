@@ -192,9 +192,11 @@
         [self reloadDateData];
     } else if ([notification object] == self.themeTableView) {
         [self.themeScrollView setHidden:YES];
-        [[JNThemeManager sharedManager] updateTheme:[[notification object] selectedRow]];
-        [self updateTheme];
-        [self.themeTableView deselectAll:nil];
+        if ([[notification object] selectedRow] >= 0) {
+            [[JNThemeManager sharedManager] updateTheme:[[notification object] selectedRow]];
+            [self updateTheme];
+            [self.themeTableView deselectAll:nil];
+        }
     }
 }
 

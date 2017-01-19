@@ -10,9 +10,10 @@
 #import <Cocoa/Cocoa.h>
 
 typedef NS_ENUM(NSInteger, JNThemeType) {
-    JNThemeType_Normal,
+    JNThemeType_Normal = 0,
     JNThemeType_Green,
     JNThemeType_Gray,
+    JNThemeType_Nice,
 };
 
 @interface JNThemeManager : NSObject
