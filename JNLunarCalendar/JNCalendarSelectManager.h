@@ -16,6 +16,4 @@
 
 + (instancetype)sharedManager;
 
-- (void)selectedDay:(NSDictionary *)dict;
-
 @end

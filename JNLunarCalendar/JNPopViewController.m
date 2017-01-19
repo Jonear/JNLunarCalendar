@@ -103,7 +103,7 @@
 - (void)updateTheme {
     
     [self.backgroundView.layer setBackgroundColor:[[JNThemeManager sharedManager] backgroundColor].CGColor];
-    [self.festivalTextFiled setTextColor:[[JNThemeManager sharedManager] detailColor]];
+//    [self.festivalTextFiled setTextColor:[[JNThemeManager sharedManager] detailColor]];
     [self.dayTextBackground.layer setBackgroundColor:[[JNThemeManager sharedManager] detailColor].CGColor];
     [self.collectionView reloadData];
 }
@@ -353,11 +353,6 @@
     } else {
         [self.festivalTextFiled setStringValue:@""];
     }
-    
-    [self.festivalTextFiled setTextColor:[[JNThemeManager sharedManager] detailColor]];
-    [self.festivalTextFiled.layer setShadowColor:[NSColor whiteColor].CGColor];
-    [self.festivalTextFiled.layer setShadowOffset:CGSizeMake(1., 1.)];
-    [self.festivalTextFiled.layer setShadowOpacity:0.5];
     
     // 布局
     [self.festivalTextFiled sizeToFit];
