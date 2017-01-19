@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define JNNotiSelctedItemChanged @"JNNotiSelctedItemChanged"
-
 @interface JNCalendarSelectManager : NSObject
 
 @property (assign) int currentYear;

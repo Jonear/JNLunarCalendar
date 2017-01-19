@@ -11,7 +11,10 @@
 #import "LunarCore.h"
 #import "JNCalendarSelectManager.h"
 
-@interface JNPopViewController () <NSMenuDelegate, NSTableViewDataSource, NSTabViewDelegate>
+#define NormalItemSize CGSizeMake(65, 58)
+#define ShortItemSize CGSizeMake(65, 51)
+
+@interface JNPopViewController () <NSMenuDelegate, NSTableViewDataSource, NSTabViewDelegate, NSCollectionViewDataSource, NSCollectionViewDelegate>
 
 @property (weak) IBOutlet NSView *backgroundView;
 @property (weak) IBOutlet NSView *headView;
@@ -33,6 +36,8 @@
 @property (weak) IBOutlet NSTextField *lunarDateTextFiled;
 @property (weak) IBOutlet NSTextField *lunarYearTextFiled;
 @property (weak) IBOutlet NSTextField *festivalTextFiled;
+
+@property (strong) NSCollectionViewFlowLayout *flowLayout;
 
 @property (strong) NSMutableArray *contentDataSouce;
 
@@ -62,10 +67,13 @@
     [self.headView setWantsLayer:YES];
     [self.headView.layer setBackgroundColor:[[NSColor whiteColor] CGColor]];
     
-    
-    self.collectionItem = [JNCollectionItem new];
-    [_collectionView setItemPrototype:self.collectionItem];
     _collectionView.selectable = YES;
+    [_collectionView registerClass:[JNCollectionItem class] forItemWithIdentifier:@"JNCollectionItem"];
+    self.flowLayout = [NSCollectionViewFlowLayout new];
+    self.flowLayout.itemSize = NormalItemSize;
+    self.flowLayout.minimumLineSpacing = 0;
+    self.flowLayout.minimumInteritemSpacing = 0;
+    _collectionView.collectionViewLayout = self.flowLayout;
     
     
     [self.yearTableView setGridStyleMask:(NSTableViewSolidHorizontalGridLineMask | NSTableViewSolidVerticalGridLineMask)];
@@ -82,23 +90,13 @@
     
     // 首次点位到今天
     [self backToToDayClick:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(selectItemChanged:)
-                                                 name:JNNotiSelctedItemChanged
-                                               object:nil];
 }
 
-- (IBAction)quitClick:(id)sender {
-    NSAlert *alert = [[NSAlert alloc] init];
-    [alert setMessageText:@"是否退出应用程序?"];
-    [alert addButtonWithTitle:@"暂不"];
-    [alert addButtonWithTitle:@"退出"];
-
-    NSModalResponse returnCode = [alert runModal];
-    if (returnCode > 1000) {
-        [[NSApplication sharedApplication] terminate:self];
-    }
+- (void)viewDidDisappear {
+    [super viewDidDisappear];
+    
+    [self.yearScrollView setHidden:YES];
+    [self.monthScrollView setHidden:YES];
 }
 
 - (void)reloadDataWithDate:(int)year month:(int)month {
@@ -111,6 +109,7 @@
         if ([content35[@"day"] integerValue] > 10) {
             // 6排
             self.contentDataSouce = contents;
+            self.flowLayout.itemSize = ShortItemSize;
         } else {
             // 5排结构
             NSMutableArray *newContents = [NSMutableArray arrayWithCapacity:35];
@@ -118,6 +117,7 @@
                 [newContents addObject:[contents objectAtIndex:i]];
             }
             self.contentDataSouce = newContents;
+            self.flowLayout.itemSize = NormalItemSize;
         }
     } else {
         self.contentDataSouce = contents;
@@ -131,6 +131,7 @@
     return self.yearDataSouce.count;
 }
 
+// MARK: - NSTableViewDataSource
 //用了下面那个函数来显示数据就用不上这个，但是协议必须要实现，所以这里返回nil
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
@@ -168,21 +169,7 @@
     }
 }
 
-- (int)currentYear {
-    return [[JNCalendarSelectManager sharedManager] currentYear];
-}
-
-- (void)setCurrentYear:(int)year {
-    [[JNCalendarSelectManager sharedManager] setCurrentYear:year];
-}
-
-- (int)currentMonth {
-    return [[JNCalendarSelectManager sharedManager] currentMonth];
-}
-
-- (void)setCurrentMonth:(int)month {
-    [[JNCalendarSelectManager sharedManager] setCurrentMonth:month];
-}
+// MARK: - ButtonClick
 
 - (IBAction)showYearPopUpMenu:(id)sender {
     if (self.yearScrollView.hidden) {
@@ -256,24 +243,19 @@
     [self reloadDateData];
 }
 
-- (void)selectItemChanged:(NSNotification *)notification {
-    NSDictionary *dict = notification.userInfo;
+- (IBAction)quitClick:(id)sender {
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:@"是否退出应用程序?"];
+    [alert addButtonWithTitle:@"暂不"];
+    [alert addButtonWithTitle:@"退出"];
     
-    if ([dict[@"month"] intValue] == self.currentMonth) {
-        [self reloadDetailData:dict];
-    } else {
-        [self setCurrentYear:[dict[@"year"] intValue]];
-        [self setCurrentMonth:[dict[@"month"] intValue]];
-        [self reloadDateDataWithDefaultSelected:[dict[@"day"] intValue]];
+    NSModalResponse returnCode = [alert runModal];
+    if (returnCode > 1000) {
+        [[NSApplication sharedApplication] terminate:self];
     }
 }
 
-- (void)viewDidDisappear {
-    [super viewDidDisappear];
-    
-    [self.yearScrollView setHidden:YES];
-}
-
+// MARK: -  ReloadData
 - (void)reloadDateData {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy"];
@@ -291,30 +273,9 @@
 }
 
 - (void)reloadDateDataWithDefaultSelected:(int)day {
+    [self setCurrentDay:day];
     [self reloadDataWithDate:self.currentYear month:self.currentMonth];
-    
-    // 设置默认选中
-    __block int selectIndex = day;
-    __block NSDictionary *wobj = nil;
-    [self.contentDataSouce enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj[@"year"] intValue] == self.currentYear && [obj[@"month"] intValue] == self.currentMonth && [obj[@"day"] intValue] == day) {
-            NSMutableDictionary *mdict = [obj mutableCopy];
-            [mdict setObject:@(YES) forKey:@"defaultSelected"];
-            [self.contentDataSouce replaceObjectAtIndex:idx withObject:mdict];
-            selectIndex = (int)idx;
-            wobj = obj;
-            *stop = YES;
-        }
-    }];
-    
     [_collectionView setContent:self.contentDataSouce];
-    // 解决一个坑爹的不能点击的问题
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if ([wobj[@"year"] intValue] == self.currentYear && [wobj[@"month"] intValue] == self.currentMonth) {
-            [_collectionView setSelectionIndexes:[NSIndexSet indexSetWithIndex:selectIndex]];
-        }
-    });
-    
     
     [_yearButton setTitle:[NSString stringWithFormat:@"%zd 年", self.currentYear]];
     [_monthButton setTitle:[NSString stringWithFormat:@"%zd 月", self.currentMonth]];
@@ -354,5 +315,71 @@
     [self.festivalTextFiled setFrame:CGRectMake(CGRectGetMinX(self.festivalTextFiled.frame), CGRectGetMinY(self.lunarYearTextFiled.frame)-CGRectGetHeight(self.festivalTextFiled.frame)-7, 123, CGRectGetHeight(self.festivalTextFiled.frame))];
 }
 
+// MARK: - NSCollectionViewDataSource
+- (NSInteger)collectionView:(NSCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section NS_AVAILABLE_MAC(10_11) {
+    return self.contentDataSouce.count;
+}
 
+- (NSCollectionViewItem *)collectionView:(NSCollectionView *)collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *)indexPath NS_AVAILABLE_MAC(10_11) {
+    JNCollectionItem *item = [collectionView makeItemWithIdentifier:@"JNCollectionItem" forIndexPath:indexPath];
+    
+    [item setSelected:NO];
+    if (self.contentDataSouce.count > indexPath.item) {
+        id dict = self.contentDataSouce[indexPath.item];
+        if ([dict[@"year"] intValue] == self.currentYear && [dict[@"month"] intValue] == self.currentMonth && [dict[@"day"] intValue] == self.currentDay) {
+            [item setSelected:YES];
+            
+            [self reloadDetailData:dict];
+            [_collectionView setSelectionIndexes:[NSIndexSet indexSetWithIndex:indexPath.item]];
+        }
+    }
+
+    return item;
+}
+
+// MARK: - NSCollectionViewDelegate
+- (void)collectionView:(NSCollectionView *)collectionView didSelectItemsAtIndexPaths:(NSSet<NSIndexPath *> *)indexPaths {
+    NSIndexPath *indexPath = [indexPaths anyObject];
+    if (self.contentDataSouce.count > indexPath.item) {
+        id representedObject = self.contentDataSouce[indexPath.item];
+        
+        [self setCurrentDay:[representedObject[@"day"] intValue]];
+        [self selectItemChanged:representedObject];
+    }
+}
+
+- (void)selectItemChanged:(NSDictionary *)representedObject {
+    if ([representedObject[@"month"] intValue] == self.currentMonth) {
+        [self reloadDetailData:representedObject];
+    } else {
+        [self setCurrentYear:[representedObject[@"year"] intValue]];
+        [self setCurrentMonth:[representedObject[@"month"] intValue]];
+        [self reloadDateDataWithDefaultSelected:[representedObject[@"day"] intValue]];
+    }
+}
+
+// MARK: - CalendarSelectManager
+- (int)currentYear {
+    return [[JNCalendarSelectManager sharedManager] currentYear];
+}
+
+- (void)setCurrentYear:(int)year {
+    [[JNCalendarSelectManager sharedManager] setCurrentYear:year];
+}
+
+- (int)currentMonth {
+    return [[JNCalendarSelectManager sharedManager] currentMonth];
+}
+
+- (void)setCurrentMonth:(int)month {
+    [[JNCalendarSelectManager sharedManager] setCurrentMonth:month];
+}
+
+- (int)currentDay {
+    return [[JNCalendarSelectManager sharedManager] currentDay];
+}
+
+- (void)setCurrentDay:(int)day {
+    [[JNCalendarSelectManager sharedManager] setCurrentDay:day];
+}
 @end

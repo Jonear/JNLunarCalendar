@@ -37,8 +37,6 @@
                 [self.view.layer setBorderColor:self.selectColor.CGColor];
                 [self.view.layer setBorderWidth:2.];
             }
-            
-            [[JNCalendarSelectManager sharedManager] selectedDay:self.representedObject];
         } else {
             [self.view.layer setBorderWidth:0.];
         }
@@ -53,10 +51,18 @@
     [self.detailLabel setTextColor:[NSColor whiteColor]];
 }
 
+- (void)setNotToDay {
+    self.isToday = NO;
+    [self.view setWantsLayer:YES];
+    [self.view.layer setBackgroundColor:[NSColor clearColor].CGColor];
+}
+
 -(void)setRepresentedObject:(id)representedObject {
     [super setRepresentedObject:representedObject];
     if (representedObject !=nil)
     {
+        [self.titleLabel setTextColor:[NSColor blackColor]];
+        [self.detailLabel setTextColor:[NSColor grayColor]];
         [self.titleLabel setStringValue:[representedObject valueForKey:@"day"]];
         
         NSString *solarFestival = [representedObject valueForKey:@"solarFestival"]; // 阳历节日
@@ -95,6 +101,8 @@
         // 今天
         if ([self isToday:[[representedObject valueForKey:@"year"] intValue] month:[[representedObject valueForKey:@"month"] intValue] day:[[representedObject valueForKey:@"day"] intValue]]) {
             [self setToDay];
+        } else {
+            [self setNotToDay];
         }
         
         // 其他月
@@ -102,12 +110,6 @@
             [[representedObject valueForKey:@"month"] intValue] != [JNCalendarSelectManager sharedManager].currentMonth) {
             [self.titleLabel setTextColor:[NSColor lightGrayColor]];
             [self.detailLabel setTextColor:[NSColor lightGrayColor]];
-        }
-        
-        if ([[representedObject valueForKey:@"defaultSelected"] boolValue]) {
-            [self setSelected:YES];
-        } else {
-            [self setSelected:NO];
         }
     }
 }

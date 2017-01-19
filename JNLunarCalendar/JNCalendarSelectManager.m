@@ -19,10 +19,4 @@
     return instance;
 }
 
-- (void)selectedDay:(NSDictionary *)dict {
-    _currentDay = [dict[@"day"] intValue];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:JNNotiSelctedItemChanged object:nil userInfo:dict];
-}
-
 @end
