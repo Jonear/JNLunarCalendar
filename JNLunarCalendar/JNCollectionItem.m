@@ -62,6 +62,8 @@
     [self setRepresentedObject:representedObject];
     if (representedObject !=nil)
     {
+        [self.eventLabel setTextColor:[JNThemeManager sharedManager].detailColor];
+        
         int year = [[representedObject valueForKey:@"year"] intValue];
         int month = [[representedObject valueForKey:@"month"] intValue];
         int day = [[representedObject valueForKey:@"day"] intValue];
