@@ -302,7 +302,9 @@
 
 - (IBAction)showEventClick:(id)sender {
     NSString *value = [JNEventManger eventFromYear:self.currentYear month:self.currentMonth day:self.currentDay];
-    [self.eventInputTextFiled setStringValue:value];
+    if (value && [value isKindOfClass:[NSString class]]) {
+        [self.eventInputTextFiled setStringValue:value];
+    }
     
     [self.eventInputTextFiled setHidden:NO];
     [self.eventInputTextFiled becomeFirstResponder];
