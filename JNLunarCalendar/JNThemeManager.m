@@ -8,14 +8,6 @@
 
 #import "JNThemeManager.h"
 
-#define NSColorFromRGBA(rgbValue, alphaValue) [NSColor \
-colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
-green:((float)((rgbValue & 0x00FF00) >> 8))/255.0 \
-blue:((float)(rgbValue & 0x0000FF))/255.0 \
-alpha:alphaValue]
-
-#define NSColorFromRGB(rgbValue)              NSColorFromRGBA(rgbValue, 1.0)
-
 #define UserSaveThemeIndexKey @"UserSaveThemeIndexKey"
 
 @implementation JNThemeManager

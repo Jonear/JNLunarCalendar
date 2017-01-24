@@ -91,8 +91,15 @@
         }
         
         // 放假
-        if ([[representedObject valueForKey:@"worktime"] boolValue]) {
+        NSNumber *worktime = [representedObject valueForKey:@"worktime"];
+        if ([worktime integerValue] > 0) {
             [self.workDayTag setHidden:NO];
+            if ([worktime integerValue] == 1) {
+                [self.workDayTag setStringValue:@"班"];
+            } else {
+                [self.workDayTag setStringValue:@"假"];
+                [self.workDayTag setTextColor:NSColorFromRGB(0x00ad12)];
+            }
         } else {
             [self.workDayTag setHidden:YES];
         }
@@ -130,6 +137,10 @@
         [[self.representedObject valueForKey:@"month"] intValue] != [JNCalendarSelectManager sharedManager].currentMonth) {
     } else {
         [self.titleLabel setTextColor:color];
+    }
+    
+    if ([[self.representedObject valueForKey:@"worktime"] integerValue] == 1) {
+        [self.workDayTag setTextColor:color];
     }
 }
 
