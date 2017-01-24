@@ -11,6 +11,7 @@
 #import "LunarCore.h"
 #import "JNCalendarSelectManager.h"
 #import "JNThemeManager.h"
+#import "JNEventManger.h"
 
 #define NormalItemSize CGSizeMake(65, 58)
 #define ShortItemSize CGSizeMake(65, 51)
@@ -41,6 +42,7 @@
 @property (weak) IBOutlet NSTextField *lunarDateTextFiled;
 @property (weak) IBOutlet NSTextField *lunarYearTextFiled;
 @property (weak) IBOutlet NSTextField *festivalTextFiled;
+@property (weak) IBOutlet NSTextField *eventInputTextFiled;
 
 @property (strong) NSCollectionViewFlowLayout *flowLayout;
 
@@ -289,13 +291,42 @@
 - (IBAction)quitClick:(id)sender {
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:@"是否退出应用程序?"];
-    [alert addButtonWithTitle:@"暂不"];
     [alert addButtonWithTitle:@"退出"];
+    [alert addButtonWithTitle:@"暂不"];
     
     NSModalResponse returnCode = [alert runModal];
-    if (returnCode > 1000) {
+    if (returnCode == 1000) {
         [[NSApplication sharedApplication] terminate:self];
     }
+}
+
+- (IBAction)showEventClick:(id)sender {
+    [self.eventInputTextFiled setHidden:NO];
+    [self.eventInputTextFiled becomeFirstResponder];
+}
+
+- (IBAction)eventDidFinishEdit:(id)sender {
+    if (self.eventInputTextFiled.stringValue.length>0 && self.eventInputTextFiled.stringValue.length<=2) {
+        NSLog(@"%@", self.eventInputTextFiled.stringValue);
+        [JNEventManger setEventToYear:self.currentYear month:self.currentMonth day:self.currentDay value:self.eventInputTextFiled.stringValue];
+        [self.eventInputTextFiled setStringValue:@""];
+        
+        [self.collectionView reloadItemsAtIndexPaths:self.collectionView.selectionIndexPaths];
+        
+    } else if (self.eventInputTextFiled.stringValue.length>0) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setMessageText:@"最多输入两个文字"];
+        [alert addButtonWithTitle:@"确定"];
+        [alert runModal];
+    } else if (self.eventInputTextFiled.isHidden == NO) {
+        NSString *value = [JNEventManger eventFromYear:self.currentYear month:self.currentMonth day:self.currentDay];
+        if (value.length > 0) {
+            [JNEventManger setEventToYear:self.currentYear month:self.currentMonth day:self.currentDay value:@""];
+            [self.collectionView reloadData];
+        }
+    }
+    
+    [self.eventInputTextFiled setHidden:YES];
 }
 
 // MARK: -  ReloadData

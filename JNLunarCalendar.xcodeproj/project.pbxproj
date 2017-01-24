@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E625B78E1E2CA79D00A65C75 /* JNCalendarSelectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E625B78D1E2CA79D00A65C75 /* JNCalendarSelectManager.m */; };
+		E64CBAFD1E36EDCC008FACE5 /* JNEventManger.m in Sources */ = {isa = PBXBuildFile; fileRef = E64CBAFC1E36EDCC008FACE5 /* JNEventManger.m */; };
 		E65DF1A21E25FB15001070C8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E65DF1A11E25FB15001070C8 /* AppDelegate.m */; };
 		E65DF1A51E25FB15001070C8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E65DF1A41E25FB15001070C8 /* main.m */; };
 		E65DF1AA1E25FB15001070C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E65DF1A91E25FB15001070C8 /* Assets.xcassets */; };
@@ -22,6 +23,8 @@
 /* Begin PBXFileReference section */
 		E625B78C1E2CA79D00A65C75 /* JNCalendarSelectManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNCalendarSelectManager.h; sourceTree = "<group>"; };
 		E625B78D1E2CA79D00A65C75 /* JNCalendarSelectManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNCalendarSelectManager.m; sourceTree = "<group>"; };
+		E64CBAFB1E36EDCC008FACE5 /* JNEventManger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNEventManger.h; sourceTree = "<group>"; };
+		E64CBAFC1E36EDCC008FACE5 /* JNEventManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNEventManger.m; sourceTree = "<group>"; };
 		E65DF19D1E25FB15001070C8 /* JNLunarCalendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JNLunarCalendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E65DF1A01E25FB15001070C8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E65DF1A11E25FB15001070C8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -83,6 +86,8 @@
 				E625B78D1E2CA79D00A65C75 /* JNCalendarSelectManager.m */,
 				E6757C4B1E30A50D00A5D7A1 /* JNThemeManager.h */,
 				E6757C4C1E30A50D00A5D7A1 /* JNThemeManager.m */,
+				E64CBAFB1E36EDCC008FACE5 /* JNEventManger.h */,
+				E64CBAFC1E36EDCC008FACE5 /* JNEventManger.m */,
 				E65DF1A91E25FB15001070C8 /* Assets.xcassets */,
 				E65DF1AE1E25FB15001070C8 /* Info.plist */,
 				E65DF1A31E25FB15001070C8 /* Supporting Files */,
@@ -184,6 +189,7 @@
 				E625B78E1E2CA79D00A65C75 /* JNCalendarSelectManager.m in Sources */,
 				E65DF1E41E270E09001070C8 /* JNCollectionItem.m in Sources */,
 				E65DF1A21E25FB15001070C8 /* AppDelegate.m in Sources */,
+				E64CBAFD1E36EDCC008FACE5 /* JNEventManger.m in Sources */,
 				E6757C4D1E30A50D00A5D7A1 /* JNThemeManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

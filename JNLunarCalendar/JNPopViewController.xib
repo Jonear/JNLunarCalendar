@@ -13,6 +13,7 @@
                 <outlet property="collectionView" destination="X1O-2j-i4r" id="5E9-20-1px"/>
                 <outlet property="dayTextBackground" destination="4la-tw-dWB" id="EWM-Dw-gWe"/>
                 <outlet property="dayTextFiled" destination="zUe-M9-lAu" id="kLq-Tt-b9n"/>
+                <outlet property="eventInputTextFiled" destination="OB8-uP-XqI" id="n3T-7l-WFn"/>
                 <outlet property="festivalTextFiled" destination="t8v-sc-gP0" id="F0S-XY-o08"/>
                 <outlet property="fullDateTextFiled" destination="k09-Wl-rPq" id="NQ7-WY-1tn"/>
                 <outlet property="headView" destination="JKk-1j-Xaw" id="jQE-OD-4dI"/>
@@ -164,10 +165,13 @@
                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xgk-PH-M4r">
                                     <rect key="frame" x="227" y="35" width="71" height="25"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="smallSquare" title="添加事件" bezelStyle="smallSquare" imagePosition="left" alignment="center" enabled="NO" borderStyle="border" inset="2" id="9nl-hN-5cg">
+                                    <buttonCell key="cell" type="smallSquare" title="添加事件" bezelStyle="smallSquare" imagePosition="left" alignment="center" borderStyle="border" inset="2" id="9nl-hN-5cg">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
+                                    <connections>
+                                        <action selector="showEventClick:" target="-2" id="tOe-Pm-yw5"/>
+                                    </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zSl-iM-Yry">
                                     <rect key="frame" x="307" y="35" width="54" height="25"/>
@@ -191,6 +195,18 @@
                                         <action selector="backToToDayClick:" target="-2" id="9QK-FK-tZo"/>
                                     </connections>
                                 </button>
+                                <textField hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OB8-uP-XqI">
+                                    <rect key="frame" x="227" y="36" width="71" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="最多两字" drawsBackground="YES" id="y1l-d5-i0e">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                    <connections>
+                                        <action selector="eventDidFinishEdit:" target="-2" id="PfR-WP-61F"/>
+                                    </connections>
+                                </textField>
                             </subviews>
                         </customView>
                         <scrollView wantsLayer="YES" fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="crG-ay-hlM" customClass="NSCollection">

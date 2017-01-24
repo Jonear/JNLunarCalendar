@@ -9,11 +9,13 @@
 #import "JNCollectionItem.h"
 #import "JNCalendarSelectManager.h"
 #import "JNThemeManager.h"
+#import "JNEventManger.h"
 
 @interface JNCollectionItem ()
 @property (weak) IBOutlet NSTextField *titleLabel;
 @property (weak) IBOutlet NSTextField *detailLabel;
 @property (weak) IBOutlet NSTextField *workDayTag;
+@property (weak) IBOutlet NSTextField *eventLabel;
 @property (assign) BOOL isToday;
 
 @end
@@ -60,6 +62,10 @@
     [self setRepresentedObject:representedObject];
     if (representedObject !=nil)
     {
+        int year = [[representedObject valueForKey:@"year"] intValue];
+        int month = [[representedObject valueForKey:@"month"] intValue];
+        int day = [[representedObject valueForKey:@"day"] intValue];
+        
         [self.titleLabel setTextColor:[NSColor blackColor]];
         [self.detailLabel setTextColor:[NSColor grayColor]];
         [self.titleLabel setStringValue:[representedObject valueForKey:@"day"]];
@@ -105,18 +111,28 @@
         }
         
         // 今天
-        if ([self isToday:[[representedObject valueForKey:@"year"] intValue] month:[[representedObject valueForKey:@"month"] intValue] day:[[representedObject valueForKey:@"day"] intValue]]) {
+        if ([self isToday:year month:month day:day]) {
             [self setToDay];
         } else {
             [self setNotToDay];
         }
         
         // 其他月
-        if ([[representedObject valueForKey:@"year"] intValue] != [JNCalendarSelectManager sharedManager].currentYear ||
-            [[representedObject valueForKey:@"month"] intValue] != [JNCalendarSelectManager sharedManager].currentMonth) {
+        if (year != [JNCalendarSelectManager sharedManager].currentYear ||
+            month != [JNCalendarSelectManager sharedManager].currentMonth) {
             [self.titleLabel setTextColor:[NSColor lightGrayColor]];
             [self.detailLabel setTextColor:[NSColor lightGrayColor]];
         }
+        
+        // 事件
+        NSString *eventString = [JNEventManger eventFromYear:year month:month day:day];
+        if (eventString.length>0) {
+            [self.eventLabel setStringValue:eventString];
+            [self.eventLabel setHidden:NO];
+        } else {
+            [self.eventLabel setHidden:YES];
+        }
+        
     }
 }
 
