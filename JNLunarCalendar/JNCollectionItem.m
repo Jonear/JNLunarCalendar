@@ -144,15 +144,17 @@
     NSString *currentYear = [dateFormatter stringFromDate:[NSDate date]];
     [dateFormatter setDateFormat:@"MM"];
     NSString *currentMonth = [dateFormatter stringFromDate:[NSDate date]];
-    [dateFormatter setDateFormat:@"DD"];
+    [dateFormatter setDateFormat:@"dd"];
     NSString *currentDay = [dateFormatter stringFromDate:[NSDate date]];
     
     return ([currentYear intValue]==year && [currentMonth intValue]==month && [currentDay intValue]==day);
 }
 
 - (void)setHolidayTagColor:(NSColor *)color {
+    // draw foreground color
     if ([[self.representedObject valueForKey:@"year"] intValue] != [JNCalendarSelectManager sharedManager].currentYear ||
         [[self.representedObject valueForKey:@"month"] intValue] != [JNCalendarSelectManager sharedManager].currentMonth) {
+    } else if ([self isToday:[[self.representedObject valueForKey:@"year"] intValue] month:[[self.representedObject valueForKey:@"month"] intValue] day:[[self.representedObject valueForKey:@"day"] intValue]]) {
     } else {
         [self.titleLabel setTextColor:color];
     }
