@@ -50,6 +50,7 @@
     [self.view.layer setBackgroundColor:self.selectColor.CGColor];
     [self.titleLabel setTextColor:[NSColor whiteColor]];
     [self.detailLabel setTextColor:[NSColor whiteColor]];
+    [self.eventLabel setTextColor:[NSColor whiteColor]];
 }
 
 - (void)setNotToDay {
