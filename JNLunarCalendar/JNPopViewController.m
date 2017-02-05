@@ -249,9 +249,9 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy"];
     NSString *currentYear = [dateFormatter stringFromDate:[NSDate date]];
-    [dateFormatter setDateFormat:@"MM"];
+    [dateFormatter setDateFormat:@"mm"];
     NSString *currentMonth = [dateFormatter stringFromDate:[NSDate date]];
-    [dateFormatter setDateFormat:@"DD"];
+    [dateFormatter setDateFormat:@"dd"];
     NSString *currentDay = [dateFormatter stringFromDate:[NSDate date]];
     
     [self.dayTextFiled setStringValue:currentDay];
@@ -339,9 +339,9 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy"];
     NSString *currentYear = [dateFormatter stringFromDate:[NSDate date]];
-    [dateFormatter setDateFormat:@"MM"];
+    [dateFormatter setDateFormat:@"mm"];
     NSString *currentMonth = [dateFormatter stringFromDate:[NSDate date]];
-    [dateFormatter setDateFormat:@"DD"];
+    [dateFormatter setDateFormat:@"dd"];
     NSString *currentDay = [dateFormatter stringFromDate:[NSDate date]];
     
     if (self.currentYear == [currentYear intValue] && self.currentMonth == [currentMonth intValue]) {
