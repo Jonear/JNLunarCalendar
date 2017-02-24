@@ -74,17 +74,20 @@
         [self.titleLabel setStringValue:[representedObject valueForKey:@"day"]];
         
         NSString *solarFestival = [representedObject valueForKey:@"solarFestival"]; // 阳历节日
-        solarFestival = [solarFestival stringByReplacingOccurrencesOfString:@"*" withString:@""];
-        NSRange range = [solarFestival rangeOfString:@"-"];
-        if (range.location != NSNotFound) {
-            solarFestival = [solarFestival substringToIndex:range.location];
-        }
-        range = [solarFestival rangeOfString:@" "];
-        if (range.location != NSNotFound) {
-            solarFestival = [solarFestival substringToIndex:range.location];
-        }
-        if (solarFestival.length > 4) {
-            solarFestival = [solarFestival substringToIndex:4];
+        if ([solarFestival hasPrefix:@"*"]) {
+            solarFestival = nil;
+        } else {
+            NSRange range = [solarFestival rangeOfString:@"-"];
+            if (range.location != NSNotFound) {
+                solarFestival = [solarFestival substringToIndex:range.location];
+            }
+            range = [solarFestival rangeOfString:@" "];
+            if (range.location != NSNotFound) {
+                solarFestival = [solarFestival substringToIndex:range.location];
+            }
+            if (solarFestival.length > 4) {
+                solarFestival = [solarFestival substringToIndex:4];
+            }
         }
         
         NSString *lunarFestival = [representedObject valueForKey:@"lunarFestival"]; // 农历节日
@@ -94,6 +97,9 @@
         } else if (lunarFestival.length>0) {
             [self.detailLabel setStringValue:lunarFestival];
             [self.detailLabel setTextColor:[NSColor redColor]];
+        } else if ([[representedObject valueForKey:@"lunarDay"] intValue] == 1){
+            [self.detailLabel setStringValue:[representedObject valueForKey:@"lunarMonthName"]];
+            [self.detailLabel setTextColor:[[JNThemeManager sharedManager] detailColor]];
         } else {
             [self.detailLabel setStringValue:[representedObject valueForKey:@"lunarDayName"]];
             [self.detailLabel setTextColor:[NSColor grayColor]];

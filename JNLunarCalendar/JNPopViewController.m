@@ -377,8 +377,13 @@
     [self.lunarYearTextFiled setStringValue:[NSString stringWithFormat:@"%@年 [%@年]", dict[@"GanZhiYear"], dict[@"zodiac"]]];
     
     NSString *solarFestival = [dict valueForKey:@"solarFestival"]; // 阳历节日
+    NSRange range = [solarFestival rangeOfString:@"-"];
+    if (range.location != NSNotFound) {
+        solarFestival = [solarFestival substringFromIndex:range.location+1];
+    }
+    
     solarFestival = [solarFestival stringByReplacingOccurrencesOfString:@" " withString:@"\n"];
-    solarFestival = [solarFestival stringByReplacingOccurrencesOfString:@"-" withString:@"\n"];
+//    solarFestival = [solarFestival stringByReplacingOccurrencesOfString:@"-" withString:@"\n"];
     solarFestival = [solarFestival stringByReplacingOccurrencesOfString:@"*" withString:@""];
     
     NSString *lunarFestival = [dict valueForKey:@"lunarFestival"]; // 农历节日
