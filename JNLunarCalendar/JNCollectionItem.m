@@ -91,11 +91,15 @@
         }
         
         NSString *lunarFestival = [representedObject valueForKey:@"lunarFestival"]; // 农历节日
-        if (solarFestival.length>0) {
+        NSString *solarTerm = [representedObject valueForKey:@"term"]; // 节气
+        if (solarFestival.length > 0) {
             [self.detailLabel setStringValue:solarFestival];
             [self.detailLabel setTextColor:[NSColor redColor]];
-        } else if (lunarFestival.length>0) {
+        } else if (lunarFestival.length > 0) {
             [self.detailLabel setStringValue:lunarFestival];
+            [self.detailLabel setTextColor:[NSColor redColor]];
+        } else if (solarTerm.length > 0) {
+            [self.detailLabel setStringValue:solarTerm];
             [self.detailLabel setTextColor:[NSColor redColor]];
         } else if ([[representedObject valueForKey:@"lunarDay"] intValue] == 1){
             [self.detailLabel setStringValue:[representedObject valueForKey:@"lunarMonthName"]];
