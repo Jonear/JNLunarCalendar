@@ -16,10 +16,12 @@
 #define NormalItemSize CGSizeMake(65, 58)
 #define ShortItemSize CGSizeMake(65, 51)
 #define HolidayColor [NSColor colorWithRed:156/255. green:0 blue:5/255. alpha:0.8]
+#define BackgrounImageColorOpration 0.4
 
 @interface JNPopViewController () <NSMenuDelegate, NSTableViewDataSource, NSTabViewDelegate, NSCollectionViewDataSource, NSCollectionViewDelegate>
 
 @property (weak) IBOutlet NSView *backgroundView;
+@property (weak) IBOutlet NSImageView *backgroundImageView;
 @property (weak) IBOutlet NSView *headView;
 @property (weak) IBOutlet NSCollectionView *collectionView;
 @property (strong) JNCollectionItem *collectionItem;
@@ -43,6 +45,7 @@
 @property (weak) IBOutlet NSTextField *lunarYearTextFiled;
 @property (weak) IBOutlet NSTextField *festivalTextFiled;
 @property (weak) IBOutlet NSTextField *eventInputTextFiled;
+@property (weak) IBOutlet NSButton *clearImageButton;
 
 @property (strong) NSCollectionViewFlowLayout *flowLayout;
 
@@ -98,13 +101,40 @@
     [self.themeTableView setRowHeight:20];
     [self.themeTableView setHeaderView:nil];
     
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                            [NSFont systemFontOfSize:11],
+                            NSFontAttributeName,
+                            [NSColor whiteColor],
+                            NSForegroundColorAttributeName,
+                            nil];
+    NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:[self.clearImageButton title] attributes:attrs];
+    [self.clearImageButton setAttributedTitle:attributedString];
+    
     // 首次点位到今天
     [self backToToDayClick:nil];
 }
 
 - (void)updateTheme {
+    BOOL findBackgroundImage = NO;
+    if (self.backgroundImageView.isHidden) {
+        NSString *imagePath = [[NSUserDefaults standardUserDefaults] objectForKey:ThemeBackgroundImageFilePath];
+        if (imagePath.length > 0) {
+            NSImage *backgroundImage = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:imagePath]];
+            if (backgroundImage) {
+                [self.backgroundImageView setImage:backgroundImage];
+                [self.backgroundImageView setHidden:NO];
+                [self.clearImageButton setHidden:NO];
+                findBackgroundImage = YES;
+            }
+        }
+    }
     
-    [self.backgroundView.layer setBackgroundColor:[[JNThemeManager sharedManager] backgroundColor].CGColor];
+    if (findBackgroundImage || self.backgroundImageView.isHidden==NO) {
+        [self.backgroundView.layer setBackgroundColor:[[[JNThemeManager sharedManager] backgroundColor] colorWithAlphaComponent:BackgrounImageColorOpration].CGColor];
+    } else {
+        [self.backgroundView.layer setBackgroundColor:[[JNThemeManager sharedManager] backgroundColor].CGColor];
+    }
+    
 //    [self.festivalTextFiled setTextColor:[[JNThemeManager sharedManager] detailColor]];
     [self.dayTextBackground.layer setBackgroundColor:[[JNThemeManager sharedManager] detailColor].CGColor];
     [self.collectionView reloadData];
@@ -147,7 +177,9 @@
     if (self.monthTableView == tableView) {
         return 12;
     } else if (self.themeTableView == tableView) {
-        return self.themeDataSouce.count;
+        if (self.backgroundImageView.isHidden) {
+            return self.themeDataSouce.count+1;
+        }
     }
     return self.yearDataSouce.count;
 }
@@ -166,9 +198,14 @@
         
     } else if (self.themeTableView == tableView) {
         NSTextField *textField = [rowView viewWithTag:31];
-        [textField setStringValue:@""];
-        NSColor *color = self.themeDataSouce[row];
-        [rowView setBackgroundColor:color];
+        if (self.themeDataSouce.count > row) {
+            [textField setStringValue:@""];
+            NSColor *color = self.themeDataSouce[row];
+            [rowView setBackgroundColor:color];
+        } else if (self.themeDataSouce.count == row){
+            [textField setFont:[NSFont systemFontOfSize:12]];
+            [textField setStringValue:@"背景图"];
+        }
     } else {
         NSTextField *textField = [rowView viewWithTag:31];
         NSString *title = [self.yearDataSouce objectAtIndex:row];
@@ -195,9 +232,14 @@
     } else if ([notification object] == self.themeTableView) {
         [self.themeScrollView setHidden:YES];
         if ([[notification object] selectedRow] >= 0) {
-            [[JNThemeManager sharedManager] updateTheme:[[notification object] selectedRow]];
-            [self updateTheme];
-            [self.themeTableView deselectAll:nil];
+            if (self.themeDataSouce.count > [[notification object] selectedRow]) {
+                [[JNThemeManager sharedManager] updateTheme:[[notification object] selectedRow]];
+                [self updateTheme];
+                [self.themeTableView deselectAll:nil];
+            } else {
+                [self updateBackgroundImage];
+                [self.themeTableView deselectAll:nil];
+            }
         }
     }
 }
@@ -332,6 +374,67 @@
     }
     
     [self.eventInputTextFiled setHidden:YES];
+}
+
+- (void)updateBackgroundImage {
+    NSOpenPanel *panel;
+    NSArray* fileTypes = [NSArray arrayWithObjects:@"jpg", @"JPG", @"jpeg", @"JPEG", @"png", @"PNG", nil];
+    panel = [NSOpenPanel openPanel];
+    [panel setFloatingPanel:YES];
+    [panel setCanChooseDirectories:NO];
+    [panel setCanChooseFiles:YES];
+    [panel setAllowsMultipleSelection:NO];
+    [panel setAllowedFileTypes:fileTypes];
+    NSInteger i = [panel runModal];
+    if(i == NSModalResponseOK){
+        [self removeOldImage];
+        NSURL *imagePath = [[panel URLs] firstObject];
+        NSData *imageData = [NSData dataWithContentsOfURL:imagePath];
+        NSImage *image = [[NSImage alloc] initWithData:imageData];
+        if (image) {
+            NSString *filePath = [[self appDocumentPath] stringByAppendingFormat:@"/%@", [imagePath lastPathComponent]];
+            [imageData writeToFile:filePath atomically:YES];
+            
+            [self.clearImageButton setHidden:NO];
+            [self.backgroundImageView setHidden:NO];
+            [self.backgroundImageView setImage:image];
+            [self.backgroundView.layer setBackgroundColor:[[[JNThemeManager sharedManager] backgroundColor] colorWithAlphaComponent:BackgrounImageColorOpration].CGColor];
+            [[NSUserDefaults standardUserDefaults] setObject:filePath forKey:ThemeBackgroundImageFilePath];
+        }
+    }
+    return;
+}
+
+- (void)removeOldImage {
+    NSString *imagePath = [[NSUserDefaults standardUserDefaults] objectForKey:ThemeBackgroundImageFilePath];
+    if (imagePath.length > 0) {
+        [[NSFileManager defaultManager] removeItemAtPath:imagePath error:nil];
+    }
+}
+
+- (IBAction)clearBackgroundImage:(id)sender {
+    [self.backgroundImageView setHidden:YES];
+    [self.backgroundImageView setImage:nil];
+    [self.backgroundView.layer setBackgroundColor:[[JNThemeManager sharedManager] backgroundColor].CGColor];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:ThemeBackgroundImageFilePath];
+    [self.clearImageButton setHidden:YES];
+    
+    [self.monthScrollView setHidden:YES];
+    [self.yearScrollView setHidden:YES];
+    [self.themeScrollView setHidden:YES];
+}
+
+// 获得当前应用目录
+- (NSString *)appDocumentPath {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *rootPath = paths.firstObject;
+    NSString *fileDir = [rootPath stringByAppendingString:@"/JNLunarCalendar"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:fileDir])
+    {
+        [[NSFileManager defaultManager] createDirectoryAtPath:fileDir withIntermediateDirectories:NO attributes:nil error:nil];
+    }
+    
+    return fileDir;
 }
 
 // MARK: -  ReloadData

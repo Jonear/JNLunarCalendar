@@ -16,6 +16,7 @@ blue:((float)(rgbValue & 0x0000FF))/255.0 \
 alpha:alphaValue]
 
 #define NSColorFromRGB(rgbValue)              NSColorFromRGBA(rgbValue, 1.0)
+#define ThemeBackgroundImageFilePath          @"ThemeBackgroundImageFilePath"
 
 typedef NS_ENUM(NSInteger, JNThemeType) {
     JNThemeType_Normal = 0,

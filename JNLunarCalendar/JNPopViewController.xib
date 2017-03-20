@@ -8,7 +8,9 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="JNPopViewController">
             <connections>
+                <outlet property="backgroundImageView" destination="2sZ-ZF-SyG" id="CEF-6I-dlu"/>
                 <outlet property="backgroundView" destination="3GD-8x-3Xu" id="2rJ-a9-pwc"/>
+                <outlet property="clearImageButton" destination="dIU-ZH-BKJ" id="8h3-Qg-Bqk"/>
                 <outlet property="clipVieew" destination="Oxb-hL-qzP" id="Vas-Vp-Hk9"/>
                 <outlet property="collectionView" destination="X1O-2j-i4r" id="5E9-20-1px"/>
                 <outlet property="dayTextBackground" destination="4la-tw-dWB" id="EWM-Dw-gWe"/>
@@ -36,6 +38,11 @@
             <rect key="frame" x="0.0" y="0.0" width="630" height="460"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
+                <imageView hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2sZ-ZF-SyG">
+                    <rect key="frame" x="0.0" y="0.0" width="630" height="460"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="axesIndependently" id="Jta-PC-cSf"/>
+                </imageView>
                 <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YYF-D6-sdl">
                     <rect key="frame" x="6" y="439" width="15" height="15"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -375,14 +382,14 @@
                             </tableHeaderView>
                         </scrollView>
                         <scrollView hidden="YES" fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="65" horizontalPageScroll="10" verticalLineScroll="65" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tnb-SE-L9w">
-                            <rect key="frame" x="314" y="263" width="55" height="90"/>
+                            <rect key="frame" x="314" y="245" width="55" height="108"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <clipView key="contentView" ambiguous="YES" id="0ps-L0-wOS">
-                                <rect key="frame" x="1" y="0.0" width="53" height="89"/>
+                                <rect key="frame" x="1" y="0.0" width="53" height="107"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="63" rowSizeStyle="automatic" headerView="ekb-76-eSL" viewBased="YES" id="xBc-Lt-jt0">
-                                        <rect key="frame" x="0.0" y="0.0" width="53" height="66"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="53" height="84"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <size key="intercellSpacing" width="3" height="2"/>
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -491,15 +498,26 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
+                        <button hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dIU-ZH-BKJ">
+                            <rect key="frame" x="490" y="13" width="80" height="19"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <buttonCell key="cell" type="roundRect" title="清除背景图" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4pg-kG-FLS">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="cellTitle"/>
+                            </buttonCell>
+                            <connections>
+                                <action selector="clearBackgroundImage:" target="-2" id="JBd-mu-QIg"/>
+                            </connections>
+                        </button>
                     </subviews>
                 </customView>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gqF-V1-ePg">
                     <rect key="frame" x="541" y="423" width="71" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="by Jonear" id="exp-Hv-ujU">
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="by Jonear" id="exp-Hv-ujU">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                     </textFieldCell>
                 </textField>
             </subviews>
