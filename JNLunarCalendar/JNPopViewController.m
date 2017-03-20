@@ -143,6 +143,10 @@
 - (void)viewDidDisappear {
     [super viewDidDisappear];
     
+    [self hiddenAllScrollView];
+}
+
+- (void)hiddenAllScrollView {
     [self.yearScrollView setHidden:YES];
     [self.monthScrollView setHidden:YES];
     [self.themeScrollView setHidden:YES];
@@ -419,9 +423,7 @@
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:ThemeBackgroundImageFilePath];
     [self.clearImageButton setHidden:YES];
     
-    [self.monthScrollView setHidden:YES];
-    [self.yearScrollView setHidden:YES];
-    [self.themeScrollView setHidden:YES];
+    [self hiddenAllScrollView];
 }
 
 // 获得当前应用目录
@@ -462,9 +464,7 @@
     [_yearButton setTitle:[NSString stringWithFormat:@"%zd 年", self.currentYear]];
     [_monthButton setTitle:[NSString stringWithFormat:@"%zd 月", self.currentMonth]];
     
-    [self.monthScrollView setHidden:YES];
-    [self.yearScrollView setHidden:YES];
-    [self.themeScrollView setHidden:YES];
+    [self hiddenAllScrollView];
     [self.yearTableView reloadData];
 }
 
@@ -540,6 +540,7 @@
         
         [self setCurrentDay:[representedObject[@"day"] intValue]];
         [self selectItemChanged:representedObject];
+        [self hiddenAllScrollView];
     }
 }
 
