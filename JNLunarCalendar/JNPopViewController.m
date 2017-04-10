@@ -46,6 +46,7 @@
 @property (weak) IBOutlet NSTextField *festivalTextFiled;
 @property (weak) IBOutlet NSTextField *eventInputTextFiled;
 @property (weak) IBOutlet NSButton *clearImageButton;
+@property (weak) IBOutlet NSButton *showInputButton;
 
 @property (strong) NSCollectionViewFlowLayout *flowLayout;
 
@@ -150,6 +151,9 @@
     [self.yearScrollView setHidden:YES];
     [self.monthScrollView setHidden:YES];
     [self.themeScrollView setHidden:YES];
+    
+    [self.showInputButton setHidden:NO];
+    [self.eventInputTextFiled setHidden:YES];
 }
 
 - (void)reloadDataWithDate:(int)year month:(int)month {
@@ -347,13 +351,14 @@
 }
 
 - (IBAction)showEventClick:(id)sender {
+    [self.showInputButton setHidden:YES];
+    [self.eventInputTextFiled setHidden:NO];
+    [self.eventInputTextFiled becomeFirstResponder];
+    
     NSString *value = [JNEventManger eventFromYear:self.currentYear month:self.currentMonth day:self.currentDay];
     if (value && [value isKindOfClass:[NSString class]]) {
         [self.eventInputTextFiled setStringValue:value];
     }
-    
-    [self.eventInputTextFiled setHidden:NO];
-    [self.eventInputTextFiled becomeFirstResponder];
 }
 
 - (IBAction)eventDidFinishEdit:(id)sender {
@@ -377,6 +382,7 @@
         }
     }
     
+    [self.showInputButton setHidden:NO];
     [self.eventInputTextFiled setHidden:YES];
 }
 
